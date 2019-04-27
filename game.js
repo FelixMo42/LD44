@@ -1,7 +1,9 @@
 var started = false
+var levelUp = false
 
 var player = {
     hp: 100,
+    max: 100,
 
     x: 0,
     y: 0,
@@ -10,6 +12,33 @@ var player = {
     moveCost: 1,
 
     reach: 100
+}
+
+var satan = {
+    x: 0,
+    y: 0,
+    setUp: false
+}
+
+var levels = [
+    {
+        dialoge: "Hello stranger, you are the most powerful soul I've seen around theses parts in ages. Unlike these petty spirits I have some class, in exchange for a nibble on your soul Ill give you a boon of your choosing."
+    }
+]
+
+var boons = {
+    clubs: [{
+        name: "walls"
+    }],
+    hearts: [{
+        name: "turrets"
+    }],
+    spades: [{
+        name: "movement speed"
+    }],
+    diamonds: [{
+        name: "bla"
+    }]
 }
 
 var kills = 0
@@ -21,6 +50,8 @@ var builds = []
 var originX = 0
 var originY = 0
 
+var level = 0
+
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent("game")
@@ -30,10 +61,29 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
+function setUpThing() {
+    document.getElementById("cards").style.display = "flex"
+    var upgrades = document.getElementsByClassName("upgrade")
+    for (var upgrade of upgrades) {
+        upgrade.onclick = () => {
+            player.hp = player.max
+
+            document.getElementById("cards").style.display = "none"
+            satan.setUp = false
+            levelUp = false
+
+            level += 1
+        }
+    }
+}
+
 function draw() {
     // set up
     var dt = 1/frameRate()
-    if (dt < 1) {
+    originX = windowWidth / 2
+    originY = windowHeight / 2
+
+    if (!levelUp && dt < 1) {
         update(dt)
     }
 
@@ -41,22 +91,40 @@ function draw() {
         fill("#B22222")
         textSize(50)
         textAlign(CENTER, CENTER)
-        text("GAME OVER",windowWidth / 2, windowHeight /2)
+        text("GAME OVER", windowWidth / 2, windowHeight /2)
         textSize(20)
-        text("reload to play again",windowWidth / 2, windowHeight /2 + 50) 
+        text("reload to play again", windowWidth / 2, windowHeight /2 + 50) 
         return
     }
 
     clear()
     background(41);
+    
+    if (levelUp) {
+        selected = -1
+
+        if (!satan.setUp) {
+            satan.x = player.x + 300
+            satan.y = player.y
+            satan.setUp = true
+        } else if (satan.x > player.x + 120) {
+            satan.x -= 100 * dt
+            satan.x = max(satan.x, player.x + 120)
+        }
+
+        if (satan.x == player.x + 120) {
+            satan.x = player.x + 119
+            setUpThing()
+        }
+
+        fill("red")
+        circle(originX + satan.x, originY + satan.y, 100)
+    }
 
     // draw menu
     if (!started) {
         drawMenu()
     }
-
-    originX = windowWidth / 2
-    originY = windowHeight / 2
 
     // draw builds
     builds.forEach((build) => {
@@ -108,11 +176,11 @@ function draw() {
     fill("gray")
     rect(10, 10, windowWidth - 20, 20, 20)
     fill("#B22222")
-    rect(10, 10, (windowWidth - 20) * player.hp / 100, 20, 20)
+    rect(10, 10, (windowWidth - 20) * player.hp / player.max, 20, 20)
     fill("white")
     textAlign(CENTER, CENTER)
     textSize(20)
-    text(floor(player.hp) + " / 100", windowWidth / 2, 21)
+    text(floor(player.hp) + " / " + player.max, windowWidth / 2, 21)
 
     // draw build bar
     startX = windowWidth / 2 - buildMenu.length * 70 / 2
@@ -136,7 +204,7 @@ function draw() {
 
     fill("white")
     textAlign(LEFT, BOTTOM)
-    text(kills + " / 25 kills", 10, windowHeight - 10)
+    text(kills + " / " + 25 * 2 ** level + " kills", 10, windowHeight - 10)
 }
 
 function drawMenu() {
@@ -152,6 +220,13 @@ function drawMenu() {
 }
 
 function update(dt) {
+    // level
+
+    if (kills >= 25 * 2 ** level) {
+        levelUp = true
+        kills = 0
+    }
+
     // player movement
     var movement = createVector()
 
@@ -238,6 +313,9 @@ function keyPressed() {
 
 function startUp() {
     function spawnEnemy() {
+        if (levelUp) {
+            return
+        }
         enemies.push({
             x: random(-500, 500),
             y: random(-500, 500),
@@ -249,7 +327,11 @@ function startUp() {
 }
 
 function mouseClicked() {
-    if (!started) {return}
+    if (levelUp) {return}
+
+    if (selected < 0) {
+        return
+    }
 
     let target = createVector(
         mouseX - player.x - originX,

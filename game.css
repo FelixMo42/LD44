@@ -3,3 +3,32 @@ body {
     overflow: hidden;
     background-color: rgb(41, 41, 41);
 }
+
+#game {
+    position: absolute;
+    z-index: -1;
+}
+
+#cards {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+#cards div {
+    margin: auto;
+}
+
+#cards div div {
+    display: inline-block;
+
+    background-image: url("cards/2_of_diamonds.svg");
+    width: 222px;
+    height: 323px;
+
+    text-align: center;
+}
+
+#cards div div:hover {
+    box-shadow: 10px 10px;
+}
