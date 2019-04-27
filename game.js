@@ -31,6 +31,15 @@ var originY = 0
 
 var level = 0
 
+function preload() {
+    ghostImage = loadImage('sprites/ghost.png')
+    spikeImage = loadImage('sprites/spike.png')
+    mcImage = loadImage('sprites/mc.png')
+    satanImage = loadImage('sprites/satan.png')
+    turretImage = loadImage('sprites/turret.png')
+    boltImage = loadImage('sprites/bolt.png')
+}
+
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent("game")
@@ -64,6 +73,8 @@ function nextThing() {
         upgrades[i].onclick = () => {
             player.max -= boons[i][0].cost
             player.hp = player.max
+
+            boons[i][0].activate()
 
             document.getElementById("cards").style.display = "none"
             satan.setUp = false
@@ -115,13 +126,13 @@ function draw() {
 
     // draw enemies
     enemies.forEach((enemie) => {
-        fill("#B22222")
-        circle(originX + enemie.x, originY + enemie.y, 60)
+        image(ghostImage, originX + enemie.x - 30, originY + enemie.y - 30)
     })
 
     // draw player
-    fill("#483D8B")
-    circle(originX + player.x, originY + player.y, 60)
+    //fill("#483D8B")
+    //circle(originX + player.x, originY + player.y, 60)
+    image(mcImage, originX + player.x - 30, originY + player.y - 30)
 
     // draw build
     if (started && selected > -1 && selected < buildMenu.length) {
@@ -187,8 +198,8 @@ function draw() {
         selected = -1
 
         fill("red")
-        circle(originX + satan.x, originY + satan.y, 100)
-
+        //circle(originX + satan.x, originY + satan.y, 100)
+        image(satanImage, originX + satan.x - 50, originY + satan.y - 50)
         if (!satan.setUp) {
             satan.x = player.x + 300
             satan.y = player.y

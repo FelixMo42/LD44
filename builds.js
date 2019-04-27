@@ -5,7 +5,11 @@ var buildMenu = [
         cost: 5,
         draw: (x, y, angle) => {
             for (var i = -2; i <= 2; i++) {
-                circle(x + i * 20 * sin(angle), y + i * 20 * cos(angle), 20)
+                image(
+                    spikeImage,
+                    x + i * 20 * sin(angle) - 10,
+                    y + i * 20 * cos(angle) - 10
+                )
             }
         },
         collide: (x, y, angle, cx, cy, radius) => {
@@ -25,21 +29,18 @@ var buildMenu = [
         name: "turret",
         hp: 50,
         cost: 10,
+        shotspeed: 1,
         draw: (x, y, angle) => {
             push()
 
-            circle(x, y, 50)
-
-            circle(x, y, 20)
-
             translate(x, y)
-            rotate(-angle)
+            rotate(-angle + Math.PI / 2)
 
-            rect(0, -10, 20, 5, 5)
-
-            rect(0, +5, 20, 5, 5)
-
-            rotate(0)
+            image(
+                turretImage,
+                -30,
+                -30
+            )
 
             pop()
         },
@@ -48,7 +49,7 @@ var buildMenu = [
         },
         update(self, index, dt) {
             if (!self.timer) {
-                self.timer = 1
+                self.timer = self.shotspeed
             }
             self.timer -= dt
             if (enemies.length == 0) {
@@ -61,7 +62,7 @@ var buildMenu = [
             this.angle = -createVector(self.target.x - self.x, self.target.y - self.y).heading()
 
             if (self.timer < 0) {
-                self.timer = 1
+                self.timer = self.shotspeed
 
                 builds.push({
                     x: self.x,
@@ -70,7 +71,15 @@ var buildMenu = [
                     timer: 1,
                     hp: 0,
                     draw: (x, y, angle) => {
-                        circle(x, y, 20)
+                        //circle(x, y, 20)
+                        push()
+
+                        translate(x, y)
+                        rotate(-angle + Math.PI / 2)
+
+                        image(boltImage, -10, -10)
+
+                        pop()
                     },
                     collide: (x, y, angle, cx, cy, radius) => {
                         return (x - cx) ** 2 + (y - cy) ** 2 < (radius + 10) ** 2
@@ -90,5 +99,13 @@ var buildMenu = [
         }
     }
 ]
+
+function getBuild(name) {
+    for (var build of buildMenu) {
+        if (build.name === name) {
+            return build
+        }
+    }
+}
 
 var selected = -1
