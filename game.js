@@ -20,27 +20,6 @@ var satan = {
     setUp: false
 }
 
-var levels = [
-    {
-        dialoge: "Hello stranger, you are the most powerful soul I've seen around theses parts in ages. Unlike these petty spirits I have some class, in exchange for a nibble on your soul Ill give you a boon of your choosing."
-    }
-]
-
-var boons = {
-    clubs: [{
-        name: "walls"
-    }],
-    hearts: [{
-        name: "turrets"
-    }],
-    spades: [{
-        name: "movement speed"
-    }],
-    diamonds: [{
-        name: "bla"
-    }]
-}
-
 var kills = 0
 
 var enemies = []
@@ -63,7 +42,7 @@ function windowResized() {
 
 function setUpThing() {
     document.getElementById("text").style.display = "block"
-
+    document.getElementById("text").getElementsByTagName("span")[0].innerHTML = levels[0].dialoge
 
     var clickCallback = () => {
         document.removeEventListener("click", clickCallback , false);
@@ -79,12 +58,14 @@ function nextThing() {
 
     document.getElementById("cards").style.display = "flex"
     var upgrades = document.getElementsByClassName("upgrade")
-    for (var upgrade of upgrades) {
-        upgrade.onclick = () => {
+    for (let i = 0; i < upgrades.length; i++) {
+        upgrades[i].querySelector("#cost").innerHTML = boons[i][0].cost
+        upgrades[i].getElementsByTagName("h1")[0].innerHTML = boons[i][0].name
+        upgrades[i].onclick = () => {
+            player.max -= boons[i][0].cost
             player.hp = player.max
 
             document.getElementById("cards").style.display = "none"
-            print(document.getElementById("cards"))
             satan.setUp = false
             levelUp = false
 

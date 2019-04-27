@@ -19,7 +19,8 @@ body {
     margin: auto;
 }
 
-#cards div div {
+.upgrade {
+    margin: 0px;
     display: inline-block;
 
     background-image: url("cards/2_of_diamonds.svg");
@@ -29,8 +30,12 @@ body {
     text-align: center;
 }
 
-#cards div div:hover {
+.upgrade:hover {
     box-shadow: 10px 10px;
+}
+
+.upgrade span {
+    font-size: 25px;
 }
 
 #text {
