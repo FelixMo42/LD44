@@ -32,3 +32,28 @@ body {
 #cards div div:hover {
     box-shadow: 10px 10px;
 }
+
+#text {
+    padding: 5px;
+    font-size: 20px;
+
+    position: absolute;
+    bottom: 0px;
+    background-color: gray;
+
+    outline: solid black;
+    margin: 10px
+}
+
+#text img {
+    display: block;
+    width: 70px;
+    height: 70px;
+    float: left;
+    margin-right: 5px;
+}
+
+#text hr {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}

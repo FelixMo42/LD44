@@ -23,6 +23,7 @@ var buildMenu = [
     },
     {
         name: "turret",
+        hp: 50,
         cost: 10,
         draw: (x, y, angle) => {
             push()
@@ -90,4 +91,4 @@ var buildMenu = [
     }
 ]
 
-var selected = 0
+var selected = -1

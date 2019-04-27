@@ -62,6 +62,21 @@ function windowResized() {
 }
 
 function setUpThing() {
+    document.getElementById("text").style.display = "block"
+
+
+    var clickCallback = () => {
+        document.removeEventListener("click", clickCallback , false);
+
+        nextThing()
+    }
+
+    document.addEventListener("click", clickCallback, false)
+}
+
+function nextThing() {
+    document.getElementById("text").style.display = "none"
+
     document.getElementById("cards").style.display = "flex"
     var upgrades = document.getElementsByClassName("upgrade")
     for (var upgrade of upgrades) {
@@ -69,6 +84,7 @@ function setUpThing() {
             player.hp = player.max
 
             document.getElementById("cards").style.display = "none"
+            print(document.getElementById("cards"))
             satan.setUp = false
             levelUp = false
 
@@ -99,27 +115,6 @@ function draw() {
 
     clear()
     background(41);
-    
-    if (levelUp) {
-        selected = -1
-
-        if (!satan.setUp) {
-            satan.x = player.x + 300
-            satan.y = player.y
-            satan.setUp = true
-        } else if (satan.x > player.x + 120) {
-            satan.x -= 100 * dt
-            satan.x = max(satan.x, player.x + 120)
-        }
-
-        if (satan.x == player.x + 120) {
-            satan.x = player.x + 119
-            setUpThing()
-        }
-
-        fill("red")
-        circle(originX + satan.x, originY + satan.y, 100)
-    }
 
     // draw menu
     if (!started) {
@@ -205,6 +200,30 @@ function draw() {
     fill("white")
     textAlign(LEFT, BOTTOM)
     text(kills + " / " + 25 * 2 ** level + " kills", 10, windowHeight - 10)
+
+    //
+    if (levelUp) {
+        selected = -1
+
+        fill("red")
+        circle(originX + satan.x, originY + satan.y, 100)
+
+        if (!satan.setUp) {
+            satan.x = player.x + 300
+            satan.y = player.y
+            satan.setUp = true
+        } else if (satan.x > player.x + 120) {
+            satan.x -= 100 * dt
+            satan.x = max(satan.x, player.x + 120)
+        } else {
+            return
+        }
+
+        if (satan.x == player.x + 120) {
+            satan.x = player.x + 119
+            setTimeout(setUpThing, 1000)
+        }
+    }
 }
 
 function drawMenu() {
