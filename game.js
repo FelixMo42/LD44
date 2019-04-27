@@ -12,99 +12,7 @@ var player = {
     reach: 100
 }
 
-var buildMenu = [
-    {
-        name: "wall",
-        hp: 200,
-        cost: 5,
-        draw: (x, y, angle) => {
-            for (var i = -2; i <= 2; i++) {
-                circle(x + i * 20 * sin(angle), y + i * 20 * cos(angle), 20)
-            }
-        },
-        collide: (x, y, angle, cx, cy, radius) => {
-            for (var i = -2; i <= 2; i++) {
-                var rx = x + i * 20 * sin(angle)
-                var ry = y + i * 20 * cos(angle)
-
-                if ((rx - cx) ** 2 + (ry - cy) ** 2 < (radius + 10) ** 2) {
-                    return true
-                }
-            }
-
-            return false
-        }
-    },
-    {
-        name: "turret",
-        cost: 10,
-        draw: (x, y, angle) => {
-            push()
-
-            circle(x, y, 50)
-
-            circle(x, y, 20)
-
-            translate(x, y)
-            rotate(-angle)
-
-            rect(0, -10, 20, 5, 5)
-
-            rect(0, +5, 20, 5, 5)
-
-            rotate(0)
-
-            pop()
-        },
-        collide: (x, y, angle, cx, cy, radius) => {
-            return (x - cx) ** 2 + (y - cy) ** 2 < (radius + 25) ** 2
-        },
-        update(self, index, dt) {
-            if (!self.timer) {
-                self.timer = 1
-            }
-            self.timer -= dt
-            if (enemies.length == 0) {
-                return
-            }
-            if (!self.target || self.target.dead) {
-                self.target = enemies[floor(random(0, enemies.length))]
-            }
-
-            this.angle = -createVector(self.target.x - self.x, self.target.y - self.y).heading()
-
-            if (self.timer < 0) {
-                self.timer = 1
-
-                builds.push({
-                    x: self.x,
-                    y: self.y,
-                    angle: self.angle,
-                    timer: 1,
-                    hp: 0,
-                    draw: (x, y, angle) => {
-                        circle(x, y, 20)
-                    },
-                    collide: (x, y, angle, cx, cy, radius) => {
-                        return (x - cx) ** 2 + (y - cy) ** 2 < (radius + 10) ** 2
-                    },
-                    update: (self, index, dt) => {
-                        self.x += cos(self.angle) * 500 * dt
-                        self.y -= sin(self.angle) * 500 * dt
-
-                        self.timer -= dt
-
-                        if (self.timer < 0) {
-                            builds.splice(index, 1)
-                        }
-                    }
-                })
-            }
-        }
-    }
-]
-
-var selected = 0
+var kills = 0
 
 var enemies = []
 
@@ -128,6 +36,17 @@ function draw() {
     if (dt < 1) {
         update(dt)
     }
+
+    if (player.hp < 0) {
+        fill("#B22222")
+        textSize(50)
+        textAlign(CENTER, CENTER)
+        text("GAME OVER",windowWidth / 2, windowHeight /2)
+        textSize(20)
+        text("reload to play again",windowWidth / 2, windowHeight /2 + 50) 
+        return
+    }
+
     clear()
     background(41);
 
@@ -214,6 +133,10 @@ function draw() {
         textAlign(CENTER, TOP)
         text(build.name, startX + (70 * index) + 30, startY + 60 + 5)
     })
+
+    fill("white")
+    textAlign(LEFT, BOTTOM)
+    text(kills + " / 25 kills", 10, windowHeight - 10)
 }
 
 function drawMenu() {
@@ -268,6 +191,7 @@ function update(dt) {
         if ((enemy.x - player.x) ** 2 + (enemy.y - player.y) ** 2 < 3600) {
             player.hp -= 10
             enemy.dead = true
+            kills += 1
             list.splice(index, 1)
         }
 
@@ -276,6 +200,7 @@ function update(dt) {
                 build.x, build.y, build.angle,
                 enemy.x, enemy.y, 30
             )) {
+                kills += 1
                 enemy.dead = true
                 list.splice(index, 1)
 
