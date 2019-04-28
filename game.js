@@ -117,7 +117,7 @@ function draw() {
     originX = windowWidth / 2
     originY = windowHeight / 2
 
-    if (!levelUp && dt < .03) {
+    if (started && !levelUp && dt < .03) {
         update(dt)
     }
 
