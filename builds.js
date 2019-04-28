@@ -71,7 +71,6 @@ var buildMenu = [
                     timer: 1,
                     hp: 0,
                     draw: (x, y, angle) => {
-                        //circle(x, y, 20)
                         push()
 
                         translate(x, y)

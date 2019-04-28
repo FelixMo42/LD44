@@ -38,6 +38,7 @@ function preload() {
     satanImage = loadImage('sprites/satan.png')
     turretImage = loadImage('sprites/turret.png')
     boltImage = loadImage('sprites/bolt.png')
+    wrathImage = loadImage('sprites/wrath.png')
 }
 
 function setup() {
@@ -49,20 +50,20 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-function setUpThing() {
+function dialoge() {
     document.getElementById("text").style.display = "block"
-    document.getElementById("text").getElementsByTagName("span")[0].innerHTML = levels[0].dialoge
+    document.getElementById("text").getElementsByTagName("span")[0].innerHTML = levels[level].dialoge
 
     var clickCallback = () => {
         document.removeEventListener("click", clickCallback , false);
 
-        nextThing()
+        deals()
     }
 
     document.addEventListener("click", clickCallback, false)
 }
 
-function nextThing() {
+function deals() {
     document.getElementById("text").style.display = "none"
 
     document.getElementById("cards").style.display = "flex"
@@ -113,6 +114,15 @@ function draw() {
         drawMenu()
     }
 
+    drawBuildings(dt)
+    drawCharacters(dt)
+    drawBuilder(dt)
+    drawHealthBar(dt)
+    drawBuildBar(dt)
+    drawLevelUp(dt)
+}
+
+function drawBuildings(dt) {
     // draw builds
     builds.forEach((build) => {
         stroke("black"),
@@ -123,17 +133,24 @@ function draw() {
             build.angle
         )
     })
+}
 
+function drawCharacters(dt) {
     // draw enemies
     enemies.forEach((enemie) => {
-        image(ghostImage, originX + enemie.x - 30, originY + enemie.y - 30)
+        image({
+            wrath: wrathImage,
+            lost_soul: ghostImage
+        }[enemie.type], originX + enemie.x - 30, originY + enemie.y - 30)
     })
 
     // draw player
     //fill("#483D8B")
     //circle(originX + player.x, originY + player.y, 60)
     image(mcImage, originX + player.x - 30, originY + player.y - 30)
+}
 
+function drawBuilder(dt) {
     // draw build
     if (started && selected > -1 && selected < buildMenu.length) {
         strokeWeight(5)
@@ -155,7 +172,9 @@ function draw() {
         stroke(0,0,0,100)
         buildMenu[selected].draw(target.x, target.y, angle)
     }
+}
 
+function drawHealthBar(dt) {
     strokeWeight(1)
 
     // draw health bar
@@ -168,7 +187,9 @@ function draw() {
     textAlign(CENTER, CENTER)
     textSize(20)
     text(floor(player.hp) + " / " + player.max, windowWidth / 2, 21)
+}
 
+function drawBuildBar(dt) {
     // draw build bar
     startX = windowWidth / 2 - buildMenu.length * 70 / 2
     startY = windowHeight - (60 + 5 + 20 + 5)
@@ -192,7 +213,9 @@ function draw() {
     fill("white")
     textAlign(LEFT, BOTTOM)
     text(kills + " / " + 25 * 2 ** level + " kills", 10, windowHeight - 10)
+}
 
+function drawLevelUp(dt) {
     //
     if (levelUp) {
         selected = -1
@@ -213,12 +236,12 @@ function draw() {
 
         if (satan.x == player.x + 120) {
             satan.x = player.x + 119
-            setTimeout(setUpThing, 1000)
+            setTimeout(dialoge, 1000)
         }
     }
 }
 
-function drawMenu() {
+function drawMenu(dt) {
     textAlign(CENTER, CENTER)
     textSize(20)
     text("Press any key to start playing!", windowWidth / 2, windowHeight / 2 + 100)
@@ -231,13 +254,19 @@ function drawMenu() {
 }
 
 function update(dt) {
+    updatePlayer(dt)
+    updateEnemies(dt)
+    updateBuildings(dt)
+    spawnEnemy(dt)
+}
+
+function updatePlayer(dt) {
     // level
 
     if (kills >= 25 * 2 ** level) {
         levelUp = true
         kills = 0
     }
-
     // player movement
     var movement = createVector()
 
@@ -263,7 +292,9 @@ function update(dt) {
 
     player.x += movement.x * player.speed * dt
     player.y += movement.y * player.speed * dt
+}
 
+function updateEnemies(dt) {
     // enemy update
     enemies.forEach((enemy, index, list) => {
         let movement = createVector(
@@ -298,7 +329,9 @@ function update(dt) {
             }
         })
     })
+}
 
+function updateBuildings(dt) {
     // build updates
     builds.forEach((build, index) => {
         if (build.update) {
@@ -307,10 +340,32 @@ function update(dt) {
     })
 }
 
-function keyPressed() {
-    if (!started) {
-        startUp()
+timer = 1
+
+function spawnEnemy(dt) {
+    timer -= dt
+    if (timer < 0) {
+        timer = 1 - level * .1
+        
+        for (let t in enemieTypes) {
+            enemie = enemieTypes[t]
+
+            if (random() > enemie.chance(level)) {
+                continue
+            }
+
+            angle = random() * Math.PI * 2
+
+            enemies.push({
+                ...enemie,
+                x: 100 * cos(angle),
+                y: 100 * sin(angle)
+            })
+        }
     }
+}
+
+function keyPressed() {
     started = true
 
     if (keyCode >= 49 && keyCode <= 57) {
@@ -320,21 +375,6 @@ function keyPressed() {
     if (keyCode == 27) {
         selected = -1
     }
-}
-
-function startUp() {
-    function spawnEnemy() {
-        if (levelUp) {
-            return
-        }
-        enemies.push({
-            x: random(-500, 500),
-            y: random(-500, 500),
-            speed: 100
-        })
-    }
-     
-    window.setInterval(spawnEnemy, 1000)
 }
 
 function mouseClicked() {
