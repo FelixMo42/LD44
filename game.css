@@ -15,6 +15,7 @@ body {
     display: flex;
 }
 
+
 #cards div {
     margin: auto;
 }
@@ -34,8 +35,13 @@ body {
     box-shadow: 10px 10px;
 }
 
-.upgrade span {
-    font-size: 25px;
+.upgrade h1 {
+    height: 150px;
+}
+
+.upgrade span, .upgrade h1 {
+    font-size: 35px;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
 }
 
 #text {

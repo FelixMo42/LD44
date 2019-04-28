@@ -69,17 +69,30 @@ function dialoge() {
 
 function deals() {
     document.getElementById("text").style.display = "none"
-
     document.getElementById("cards").style.display = "flex"
+    var selected = []
     var upgrades = document.getElementsByClassName("upgrade")
-    for (let i = 0; i < upgrades.length; i++) {
-        upgrades[i].querySelector("#cost").innerHTML = boons[i][0].cost
-        upgrades[i].getElementsByTagName("h1")[0].innerHTML = boons[i][0].name
+    for (let i = 0; i < min(4, upgrades.length); i++) {
+        var boon = boons[floor(random(0, boons.length - 1))]
+        while (selected.indexOf(boon) !== -1) {
+            var boon = boons[floor(random(0, boons.length))]
+        }
+        selected.push(boon)
+
+        upgrades[i].querySelector("#cost").innerHTML = boon[0].cost
+        upgrades[i].getElementsByTagName("h1")[0].innerHTML = boon[0].name
+        upgrades[i].style.backgroundImage = "url('cards/" + boon[0].card + ".svg')"
         upgrades[i].onclick = () => {
             player.max -= boons[i][0].cost
             player.hp = player.max
 
-            boons[i][0].activate()
+            boon[0].activate()
+
+            boon.shift()
+
+            if (boon.length == 0) {
+                boons.splice(boons.indexOf(boon), 1)
+            }
 
             document.getElementById("cards").style.display = "none"
             satan.setUp = false
@@ -90,13 +103,15 @@ function deals() {
     }
 }
 
+// drawing code ///
+
 function draw() {
     // set up
-    var dt = 1/frameRate()
+    var dt = 1 / frameRate()
     originX = windowWidth / 2
     originY = windowHeight / 2
 
-    if (!levelUp && dt < 1) {
+    if (!levelUp && dt < .03) {
         update(dt)
     }
 
@@ -220,27 +235,28 @@ function drawBuildBar(dt) {
 }
 
 function drawLevelUp(dt) {
-    //
     if (levelUp) {
         selected = -1
 
-        fill("red")
-        //circle(originX + satan.x, originY + satan.y, 100)
-        image(satanImage, originX + satan.x - 50, originY + satan.y - 50)
         if (!satan.setUp) {
             satan.x = player.x + 300
             satan.y = player.y
             satan.setUp = true
+
+            image(satanImage, originX + satan.x - 50, originY + satan.y - 50)
         } else if (satan.x > player.x + 120) {
             satan.x -= 100 * dt
             satan.x = max(satan.x, player.x + 120)
+
+            image(satanImage, originX + satan.x - 50, originY + satan.y - 50)
         } else {
+            image(satanImage, originX + satan.x - 50, originY + satan.y - 50)
             return
         }
 
         if (satan.x == player.x + 120) {
             satan.x = player.x + 119
-            setTimeout(dialoge, 1000)
+            dialoge()
         }
     }
 }
@@ -256,6 +272,8 @@ function drawMenu(dt) {
     textSize(30)
     text("TEMP GAME NAME", windowWidth / 2,  100)
 }
+
+// update //
 
 function update(dt) {
     updatePlayer(dt)
@@ -332,7 +350,7 @@ function updateEnemies(dt) {
         })
 
         if (enemy.hp <= 0) {
-            kills += enemie.count || 0
+            kills += enemie.count || 1
             enemy.dead = true
             list.splice(index, 1)
         }

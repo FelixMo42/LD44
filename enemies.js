@@ -13,7 +13,7 @@ var enemieTypes = {
         hp: 1,
         chance: (level) => level / 5
     },
-    wrath: {
+    zombie: {
         type: "zombie",
         speed: 80,
         damage: 50,
