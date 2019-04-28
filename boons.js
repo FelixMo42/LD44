@@ -14,6 +14,13 @@ var boons = [
         activate: () => {
             getBuild("wall").hp += 100
         }
+    },{
+        name: "increase wall health",
+        cost: 12,
+        card: "queen_of_hearts",
+        activate: () => {
+            getBuild("wall").hp += 100
+        }
     }],
         // turret shot speed //
     [{
@@ -82,6 +89,60 @@ var boons = [
         card: "jack_of_hearts",
         activate: () => {
             getBuild("wall").cost = 1
+        }
+    }],
+        // turret cost //
+    [{
+        name: "decrease turret cost",
+        cost: 6,
+        card: "6_of_clubs",
+        activate: () => {
+            getBuild("turret").cost = 10
+        }
+    }, {
+        name: "decrease turret cost",
+        cost: 12,
+        card: "queen_of_clubs",
+        activate: () => {
+            getBuild("turret").cost = 5
+        }
+    }],
+        // spike traps //
+    [{
+        name: "unlock spike trapes",
+        cost: 11,
+        card: "jack_of_spades",
+        activate: () => {
+            buildMenu.push({
+                name: "spike trap",
+                cost: 5,
+                damage: 10,
+                hp: 50,
+                draw: (x, y) => {
+                    image(
+                        spikeImage,
+                        x-30,
+                        y-30
+                    )
+                },
+                collide: (x, y, angle, cx, cy, radius) => {
+                    return (x - cx) ** 2 + (y - cy) ** 2 < (radius + 30) ** 2
+                }
+            })
+        }
+    }, {
+        name: "increase spike trapes health",
+        cost: 2,
+        card: "2_of_spades",
+        activate: () => {
+            getBuild("spike trap").hp = 100
+        }
+    }, {
+        name: "decrease spike trapes cost",
+        cost: 6,
+        card: "6_of_spades",
+        activate: () => {
+            getBuild("spike trap").cost = 1
         }
     }]
 ]

@@ -33,7 +33,8 @@ var level = 0
 
 function preload() {
     ghostImage = loadImage('sprites/ghost.png')
-    spikeImage = loadImage('sprites/spike.png')
+    spikeImage = loadImage('sprites/spikes.png')
+    wallImage = loadImage('sprites/spike.png')
     mcImage = loadImage('sprites/mc.png')
     satanImage = loadImage('sprites/satan.png')
     turretImage = loadImage('sprites/turret.png')
@@ -73,7 +74,6 @@ function deals() {
     var selected = []
     var upgrades = document.getElementsByClassName("upgrade")
     for (let i = 0; i < min(4, boons.length); i++) {
-        print(i)
         let boon = boons[int(random(0, boons.length))]
         while (selected.indexOf(boon) !== -1) {
             boon = boons[int(random(0, boons.length))]
@@ -346,8 +346,8 @@ function updateEnemies(dt) {
                 build.x, build.y, build.angle,
                 enemy.x, enemy.y, 30
             )) {
-                build.hp -= 10
-                enemy.hp -= 1
+                build.hp -= enemy.damage
+                enemy.hp -= build.damage || 1
 
                 if (build.hp < 0) {
                     builds.splice(i, 1)
@@ -410,6 +410,8 @@ function keyPressed() {
 }
 
 function mouseClicked() {
+    started = true
+
     if (levelUp) {return}
 
     if (selected < 0) {

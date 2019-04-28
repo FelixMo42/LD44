@@ -6,7 +6,7 @@ var buildMenu = [
         draw: (x, y, angle) => {
             for (var i = -2; i <= 2; i++) {
                 image(
-                    spikeImage,
+                    wallImage,
                     x + i * 20 * sin(angle) - 10,
                     y + i * 20 * cos(angle) - 10
                 )
