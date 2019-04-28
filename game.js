@@ -272,7 +272,7 @@ function drawMenu(dt) {
     textSize(20)
     text("Press any key to start playing!", windowWidth / 2, windowHeight / 2 + 100)
 
-    text("Use arrow keys or wasd to move.", windowWidth / 2, windowHeight / 2 + 200)
+    text("Use arrow keys or wasd to move and number keys to select structor.", windowWidth / 2, windowHeight / 2 + 200)
 
     textAlign(CENTER, TOP)
     textSize(30)
