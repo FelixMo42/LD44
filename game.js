@@ -39,6 +39,8 @@ function preload() {
     turretImage = loadImage('sprites/turret.png')
     boltImage = loadImage('sprites/bolt.png')
     wrathImage = loadImage('sprites/wrath.png')
+    zombieImage = loadImage('sprites/zombie.png')
+    willowispImage = loadImage('sprites/willowisp.png')
 }
 
 function setup() {
@@ -136,17 +138,15 @@ function drawBuildings(dt) {
 }
 
 function drawCharacters(dt) {
-    // draw enemies
     enemies.forEach((enemie) => {
         image({
             wrath: wrathImage,
-            lost_soul: ghostImage
+            lost_soul: ghostImage,
+            zombie: zombieImage,
+            willowisp: willowispImage
         }[enemie.type], originX + enemie.x - 30, originY + enemie.y - 30)
     })
 
-    // draw player
-    //fill("#483D8B")
-    //circle(originX + player.x, originY + player.y, 60)
     image(mcImage, originX + player.x - 30, originY + player.y - 30)
 }
 
@@ -306,10 +306,8 @@ function updateEnemies(dt) {
         enemy.y += movement.y * enemy.speed * dt
 
         if ((enemy.x - player.x) ** 2 + (enemy.y - player.y) ** 2 < 3600) {
-            player.hp -= 10
-            enemy.dead = true
-            kills += 1
-            list.splice(index, 1)
+            player.hp -= enemy.damage
+            enemy.hp -= 1
         }
 
         builds.forEach((build, i) => {
@@ -317,17 +315,20 @@ function updateEnemies(dt) {
                 build.x, build.y, build.angle,
                 enemy.x, enemy.y, 30
             )) {
-                kills += 1
-                enemy.dead = true
-                list.splice(index, 1)
-
                 build.hp -= 10
+                enemy.hp -= 1
 
                 if (build.hp < 0) {
                     builds.splice(i, 1)
                 }
             }
         })
+
+        if (enemy.hp <= 0) {
+            kills += 1
+            enemy.dead = true
+            list.splice(index, 1)
+        }
     })
 }
 
@@ -358,8 +359,8 @@ function spawnEnemy(dt) {
 
             enemies.push({
                 ...enemie,
-                x: 100 * cos(angle),
-                y: 100 * sin(angle)
+                x: 1000 * cos(angle),
+                y: 1000 * sin(angle)
             })
         }
     }
