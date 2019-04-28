@@ -29,7 +29,7 @@ var buildMenu = [
         name: "turret",
         hp: 25,
         cost: 15,
-        shotspeed: 1,
+        shotspeed: 2,
         draw: (x, y, angle) => {
             push()
 
@@ -68,7 +68,7 @@ var buildMenu = [
                     x: self.x,
                     y: self.y,
                     angle: self.angle,
-                    timer: 1,
+                    timer: 5,
                     hp: 0,
                     draw: (x, y, angle) => {
                         push()

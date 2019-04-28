@@ -21,7 +21,21 @@ var boons = [
         cost: 5,
         card: "5_of_clubs",
         activate: () => {
-            getBuild("wall").shotspeed -= .25
+            getBuild("turret").shotspeed -= .25
+        }
+    },{
+        name: "increase turret shot speed",
+        cost: 10,
+        card: "10_of_clubs",
+        activate: () => {
+            getBuild("turret").shotspeed -= .25
+        }
+    },{
+        name: "increase turret shot speed",
+        cost: 15,
+        card: "ace_of_clubs",
+        activate: () => {
+            getBuild("turret").shotspeed -= .25
         }
     }],
         // movement speed //

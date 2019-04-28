@@ -9,7 +9,7 @@ var player = {
     y: 0,
 
     speed: 300,
-    moveCost: 1,
+    moveCost: 0,
 
     reach: 100
 }
@@ -72,10 +72,11 @@ function deals() {
     document.getElementById("cards").style.display = "flex"
     var selected = []
     var upgrades = document.getElementsByClassName("upgrade")
-    for (let i = 0; i < min(4, upgrades.length); i++) {
-        var boon = boons[floor(random(0, boons.length - 1))]
+    for (let i = 0; i < min(4, boons.length); i++) {
+        print(i)
+        let boon = boons[int(random(0, boons.length))]
         while (selected.indexOf(boon) !== -1) {
-            var boon = boons[floor(random(0, boons.length))]
+            boon = boons[int(random(0, boons.length))]
         }
         selected.push(boon)
 
@@ -83,7 +84,7 @@ function deals() {
         upgrades[i].getElementsByTagName("h1")[0].innerHTML = boon[0].name
         upgrades[i].style.backgroundImage = "url('cards/" + boon[0].card + ".svg')"
         upgrades[i].onclick = () => {
-            player.max -= boons[i][0].cost
+            player.max -= boon[0].cost
             player.hp = player.max
 
             boon[0].activate()
@@ -99,6 +100,11 @@ function deals() {
             levelUp = false
 
             level += 1
+        }
+    }
+    if (boons.length < 4) {
+        for (let i = 3; i >= boons.length; i--) {
+            upgrades[i].style.display = "none"   
         }
     }
 }
@@ -270,7 +276,7 @@ function drawMenu(dt) {
 
     textAlign(CENTER, TOP)
     textSize(30)
-    text("TEMP GAME NAME", windowWidth / 2,  100)
+    text("The Devils New Dealer", windowWidth / 2,  100)
 }
 
 // update //
