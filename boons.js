@@ -24,7 +24,14 @@ var boons = [
         name: "decrease wall cost",
         cost: 5,
         activate: () => {
-            getBuild("wall").cost -= 5
+            getBuild("wall").cost = 5
+        }
+    },
+    {
+        name: "decrease wall cost",
+        cost: 5,
+        activate: () => {
+            getBuild("wall").cost = 1
         }
     }]
 ]

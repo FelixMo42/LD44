@@ -1,8 +1,8 @@
 var buildMenu = [
     {
         name: "wall",
-        hp: 200,
-        cost: 5,
+        hp: 100,
+        cost: 10,
         draw: (x, y, angle) => {
             for (var i = -2; i <= 2; i++) {
                 image(
@@ -27,8 +27,8 @@ var buildMenu = [
     },
     {
         name: "turret",
-        hp: 50,
-        cost: 10,
+        hp: 25,
+        cost: 15,
         shotspeed: 1,
         draw: (x, y, angle) => {
             push()

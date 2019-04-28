@@ -41,6 +41,8 @@ function preload() {
     wrathImage = loadImage('sprites/wrath.png')
     zombieImage = loadImage('sprites/zombie.png')
     willowispImage = loadImage('sprites/willowisp.png')
+    casterImage = loadImage('sprites/caster.png')
+    fireballImage = loadImage('sprites/fireball.png')
 }
 
 function setup() {
@@ -143,7 +145,9 @@ function drawCharacters(dt) {
             wrath: wrathImage,
             lost_soul: ghostImage,
             zombie: zombieImage,
-            willowisp: willowispImage
+            willowisp: willowispImage,
+            caster: casterImage,
+            fireball: fireballImage
         }[enemie.type], originX + enemie.x - 30, originY + enemie.y - 30)
     })
 
@@ -295,15 +299,18 @@ function updatePlayer(dt) {
 }
 
 function updateEnemies(dt) {
-    // enemy update
     enemies.forEach((enemy, index, list) => {
-        let movement = createVector(
-            player.x - enemy.x,
-            player.y - enemy.y
-        ).setMag(1)
-
-        enemy.x += movement.x * enemy.speed * dt
-        enemy.y += movement.y * enemy.speed * dt
+        if (enemy.update) {
+            enemy.update(enemy, dt)
+        } else {
+            let movement = createVector(
+                player.x - enemy.x,
+                player.y - enemy.y
+            ).setMag(1)
+    
+            enemy.x += movement.x * enemy.speed * dt
+            enemy.y += movement.y * enemy.speed * dt
+        }
 
         if ((enemy.x - player.x) ** 2 + (enemy.y - player.y) ** 2 < 3600) {
             player.hp -= enemy.damage
@@ -325,7 +332,7 @@ function updateEnemies(dt) {
         })
 
         if (enemy.hp <= 0) {
-            kills += 1
+            kills += enemie.count || 0
             enemy.dead = true
             list.splice(index, 1)
         }
